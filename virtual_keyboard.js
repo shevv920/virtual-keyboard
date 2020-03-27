@@ -41,8 +41,7 @@ const createElements = (state) => {
 const printSymbol = (char) => {
   const textArea = document.querySelector(`.${cssClasses.textArea}`);
   textArea.textContent += char;
-  textArea.selectionStart = textArea.textContent.length + 1;
-  textArea.selectionEnd = textArea.textContent.length + 1;
+  textArea.setSelectionRange(textArea.textContent.length + 1, textArea.textContent.length + 1);
 };
 
 const processKeyPressed = (key, keyCode) => {
@@ -51,8 +50,7 @@ const processKeyPressed = (key, keyCode) => {
   switch (keyCode) {
     case 'Backspace':
       textArea.textContent = textArea.textContent.substring(0, textArea.textContent.length - 1);
-      textArea.selectionStart = textArea.textContent.length;
-      textArea.selectionEnd = textArea.textContent.length;
+      textArea.setSelectionRange(textArea.textContent.length, textArea.textContent.length);
       break;
     case 'Enter':
       printSymbol('\r\n');
@@ -63,8 +61,15 @@ const processKeyPressed = (key, keyCode) => {
     case 'CapsLock':
       document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.on);
       break;
+    case 'Delete':
+
+      break;
     case 'ShiftLeft':
     case 'ShiftRight':
+    case 'AltLeft':
+    case 'AltRight':
+    case 'ControlLeft':
+    case 'ControlRight':
       break;
     default:
       printSymbol(key);
