@@ -1,0 +1,6 @@
+{
+  "extends": "stylelint-config-htmlacademy",
+  "rules": {
+  "selector-max-id": 1
+  }
+}
