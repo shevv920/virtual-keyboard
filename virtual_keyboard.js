@@ -12,19 +12,14 @@ const cssClasses = {
   on: 'on',
 };
 
-const getState = () => window.localStorage.getItem('state');
+const defaultLang = 'en';
+const saveLang = (lang) => window.localStorage.setItem('lang', lang);
+const getLang = () => (window.localStorage.getItem('lang') ? window.localStorage.getItem('lang') : defaultLang);
 
-const createElements = (state) => {
-  const mainContainer = document.createElement('div');
-  mainContainer.classList.add(cssClasses.wrapper);
-  const textArea = document.createElement('textarea');
-  textArea.classList.add(cssClasses.textArea);
-  const capsIndicator = document.createElement('div');
-  capsIndicator.classList.add(cssClasses.capsIndicator, cssClasses.off);
-  const kbContainer = document.createElement('div');
-  kbContainer.classList.add(cssClasses.kbContainer);
-  const currentLayout = state !== null ? Layouts[state.layout] : Layouts.en;
-  const kbElements = Object.entries(currentLayout).map((key) => {
+const getCurrentLayout = (lang) => (lang !== null ? Layouts[lang] : Layouts[defaultLang]);
+
+const createKeyboardElements = (lang) => {
+  const kbElements = Object.entries(getCurrentLayout(lang)).map((key) => {
     const [id, value] = key;
     const elem = document.createElement('span');
     elem.id = id.toLowerCase();
@@ -33,24 +28,64 @@ const createElements = (state) => {
     elem.style.gridArea = id;
     return elem;
   });
-  kbContainer.append(...kbElements, capsIndicator);
+  return kbElements;
+};
+
+const createPageElements = (lang) => {
+  const mainContainer = document.createElement('div');
+  mainContainer.classList.add(cssClasses.wrapper);
+  const textArea = document.createElement('textarea');
+  textArea.classList.add(cssClasses.textArea);
+  const kbContainer = document.createElement('div');
+  kbContainer.classList.add(cssClasses.kbContainer);
+  const kbElements = createKeyboardElements(lang);
+  kbContainer.append(...kbElements);
   mainContainer.append(textArea, kbContainer);
   return mainContainer;
 };
 
-const printSymbol = (char) => {
+const printSymbol = (keyCode) => {
   const textArea = document.querySelector(`.${cssClasses.textArea}`);
+  const char = getCurrentLayout(getLang())[keyCode];
   textArea.textContent += char;
   textArea.setSelectionRange(textArea.textContent.length + 1, textArea.textContent.length + 1);
 };
 
+const moveCursorLeft = (textArea) => {
+  if (textArea.selectionEnd) {
+    textArea.setSelectionRange(textArea.selectionEnd - 1, textArea.selectionEnd - 1);
+  }
+};
+
+const moveCursorRight = (textArea) => {
+  textArea.setSelectionRange(textArea.selectionEnd + 1, textArea.selectionEnd + 1);
+};
+
+const moveCursorUp = (textArea) => {
+
+};
+
+const moveCursorDown = (textArea) => {
+
+};
+
+const switchLayout = () => {
+  let lang = !getLang() ? defaultLang : getLang();
+  lang = lang === 'en' ? 'ru' : 'en';
+  saveLang(lang);
+  const kbElements = createKeyboardElements(getLang());
+  const kbContainer = document.querySelector(`.${cssClasses.kbContainer}`);
+  kbContainer.innerHTML = '';
+  kbContainer.append(...kbElements);
+};
+
 const processKeyPressed = (key, keyCode) => {
   const textArea = document.querySelector(`.${cssClasses.textArea}`);
-
+  const text = textArea.textContent;
   switch (keyCode) {
     case 'Backspace':
-      textArea.textContent = textArea.textContent.substring(0, textArea.textContent.length - 1);
-      textArea.setSelectionRange(textArea.textContent.length, textArea.textContent.length);
+      textArea.textContent = text.substring(0, text.length - 1);
+      textArea.setSelectionRange(text.length, text.length);
       break;
     case 'Enter':
       printSymbol('\r\n');
@@ -59,10 +94,26 @@ const processKeyPressed = (key, keyCode) => {
       printSymbol('\t');
       break;
     case 'CapsLock':
-      document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.on);
+      switchLayout();
       break;
     case 'Delete':
-
+      if (textArea.selectionEnd < text.length) {
+        const temp = textArea.selectionEnd;
+        textArea.textContent = text.substring(0, text.length - 1);
+        textArea.setSelectionRange(temp, temp);
+      }
+      break;
+    case 'ArrowLeft':
+      moveCursorLeft(textArea);
+      break;
+    case 'ArrowRight':
+      moveCursorRight(textArea);
+      break;
+    case 'ArrowUp':
+      moveCursorUp(textArea);
+      break;
+    case 'ArrowDown':
+      moveCursorDown(textArea);
       break;
     case 'ShiftLeft':
     case 'ShiftRight':
@@ -72,7 +123,7 @@ const processKeyPressed = (key, keyCode) => {
     case 'ControlRight':
       break;
     default:
-      printSymbol(key);
+      printSymbol(keyCode);
       textArea.focus();
       break;
   }
@@ -94,9 +145,9 @@ const onKeyUp = (event) => {
 };
 
 window.addEventListener('load', () => {
-  const state = getState();
-  const keyboardLayout = createElements(state);
-  document.querySelector('body').appendChild(keyboardLayout);
+  const lang = getLang();
+  const pageElements = createPageElements(lang);
+  document.querySelector('body').appendChild(pageElements);
   document.addEventListener('keydown', onKeyDown);
   document.addEventListener('keyup', onKeyUp);
 });
