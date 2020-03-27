@@ -1,0 +1,28 @@
+{
+  "name": "virtual-keyboard",
+  "version": "1.0.0",
+  "description": "virtual keyboard task",
+  "main": "virtual_keyboard.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shevv920/virtual-keyboard.git"
+  },
+  "keywords": [
+    "rsschool",
+    "task"
+  ],
+  "author": "Vladimir Shevtsov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shevv920/virtual-keyboard/issues"
+  },
+  "homepage": "https://github.com/shevv920/virtual-keyboard#readme",
+  "dependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1"
+  }
+}
