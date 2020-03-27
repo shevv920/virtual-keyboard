@@ -60,6 +60,7 @@ const Layouts = {
     AltLeft: 'Alt',
     Space: ' ',
     AltRight: 'Alt',
+    ControlRight: 'Ctrl',
     ArrowLeft: '&#9668;',
     ArrowDown: '&#9660;',
     ArrowRight: '&#9658;',
