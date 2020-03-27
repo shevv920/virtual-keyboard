@@ -1,6 +1,6 @@
 const Layouts = {
   ru: {
-    Backquote: 'Ё',
+    Backquote: 'ё',
     Digit1: '1',
     Digit2: '2',
     Digit3: '3',
