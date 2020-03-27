@@ -1,0 +1,48 @@
+* {
+  margin: 0;
+  margin-block-end: 0;
+  margin-block-start: 0;
+  margin-inline-start: 0;
+  scroll-margin-inline-end: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.wrapper {
+  max-width: 800px;
+  padding: 40px;
+}
+
+.textarea {
+  padding: 5px;
+  height: 128px;
+  width: 100%;
+  resize: none;
+}
+
+.keyboard_container {
+  display: grid;
+  grid-template-areas:
+    "Backquote Digit1 Digit2 Digit3 Digit4 Digit5 Digit6 Digit7 Digit8 Digit9 Digit0 Minus Equal Backspace"
+    "Tab KeyQ KeyW KeyE KeyR KeyT KeyY KeyU KeyI KeyO KeyP BracketLeft BracketRight Enter"
+    "CapsLock KeyA KeyS KeyD KeyF KeyG KeyH KeyJ KeyK KeyL Semicolon Quote Backslash Enter"
+    "ShiftLeft KeyZ KeyX KeyC KeyV KeyB KeyN KeyM Comma Period Slash ShiftRight ArrowUp Delete"
+    "ControlLeft AltLeft MetaLeft Space Space Space Space Space Space AltRight ControlRight ArrowLeft ArrowDown ArrowRight";
+  width: 100%;
+  padding: 5px;
+  flex-wrap: wrap;
+}
+
+.key {
+  margin: 5px;
+  padding: 5px;
+  box-shadow: 0 5px rgb(154, 154, 154);
+  border: 1px solid #000000;
+}
+
+.key_pressed {
+  background-color: #00a0a0;
+  box-shadow: 0 5px rgb(104, 103, 103);
+  transition: 0.1s ease-in-out;
+  transform: translateY(4px);
+}
