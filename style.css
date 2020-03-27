@@ -20,24 +20,43 @@
   resize: none;
 }
 
+.on {
+  background-color: #00ff00;
+}
+
+.caps_indicator {
+  grid-area: CapsIndicator;
+  width: 10px;
+  height: 10px;
+  border: 1px solid #000000;
+  border-radius: 50%;
+}
+
 .keyboard_container {
   display: grid;
   grid-template-areas:
+    ". . . . . . . . . . . . . CapsIndicator"
     "Backquote Digit1 Digit2 Digit3 Digit4 Digit5 Digit6 Digit7 Digit8 Digit9 Digit0 Minus Equal Backspace"
     "Tab KeyQ KeyW KeyE KeyR KeyT KeyY KeyU KeyI KeyO KeyP BracketLeft BracketRight Enter"
     "CapsLock KeyA KeyS KeyD KeyF KeyG KeyH KeyJ KeyK KeyL Semicolon Quote Backslash Enter"
     "ShiftLeft KeyZ KeyX KeyC KeyV KeyB KeyN KeyM Comma Period Slash ShiftRight ArrowUp Delete"
     "ControlLeft AltLeft MetaLeft Space Space Space Space Space Space AltRight ControlRight ArrowLeft ArrowDown ArrowRight";
+  justify-items: center;
   width: 100%;
-  padding: 5px;
-  flex-wrap: wrap;
+  padding: 5px 5px 10px 5px;
+  gap: 10px 10px;
+  border-top: 1px solid #adacac;
+  border-right: 1px solid #adacac;
+  border-left: 5px solid #adacac;
+  border-bottom: 5px solid #adacac;
+  border-radius: 15px;
 }
 
 .key {
-  margin: 5px;
-  padding: 5px;
+  padding: 2px 5px;
   box-shadow: 0 5px rgb(154, 154, 154);
   border: 1px solid #000000;
+  border-radius: 5px;
 }
 
 .key_pressed {
@@ -45,4 +64,8 @@
   box-shadow: 0 5px rgb(104, 103, 103);
   transition: 0.1s ease-in-out;
   transform: translateY(4px);
+}
+
+#space {
+  justify-self: stretch;
 }
