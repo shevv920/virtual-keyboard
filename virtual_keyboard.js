@@ -3,6 +3,7 @@ import Layouts from './layouts.js';
 const cssClasses = {
   wrapper: 'wrapper',
   kbContainer: 'keyboard_container',
+  kbKeys: 'keyboard_keys',
   textArea: 'textarea',
   key: 'key',
   specialKey: 'special_key',
@@ -38,8 +39,14 @@ const createPageElements = (lang) => {
   textArea.classList.add(cssClasses.textArea);
   const kbContainer = document.createElement('div');
   kbContainer.classList.add(cssClasses.kbContainer);
+  const capsIndicator = document.createElement('div');
+  capsIndicator.classList.add(cssClasses.capsIndicator);
+  kbContainer.append(capsIndicator);
+  const kbKeys = document.createElement('div');
+  kbKeys.classList.add(cssClasses.kbKeys);
   const kbElements = createKeyboardElements(lang);
-  kbContainer.append(...kbElements);
+  kbKeys.append(...kbElements);
+  kbContainer.append(kbKeys);
   mainContainer.append(textArea, kbContainer);
   return mainContainer;
 };
@@ -74,9 +81,9 @@ const switchLayout = () => {
   lang = lang === 'en' ? 'ru' : 'en';
   saveLang(lang);
   const kbElements = createKeyboardElements(getLang());
-  const kbContainer = document.querySelector(`.${cssClasses.kbContainer}`);
-  kbContainer.innerHTML = '';
-  kbContainer.append(...kbElements);
+  const kbKeys = document.querySelector(`.${cssClasses.kbKeys}`);
+  kbKeys.innerHTML = '';
+  kbKeys.append(...kbElements);
 };
 
 const processKeyPressed = (key, keyCode) => {
@@ -94,6 +101,7 @@ const processKeyPressed = (key, keyCode) => {
       printSymbol('\t');
       break;
     case 'CapsLock':
+      document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.on);
       switchLayout();
       break;
     case 'Delete':
