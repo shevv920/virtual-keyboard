@@ -57,6 +57,7 @@
 
 .key {
   min-width: 25px;
+  min-height: 20px;
   padding: 0 2px;
   text-align: center;
   cursor: pointer;
@@ -72,6 +73,6 @@
   transform: translateY(4px);
 }
 
-#space {
+#Space {
   justify-self: stretch;
 }
