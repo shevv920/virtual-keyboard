@@ -13,6 +13,8 @@ const cssClasses = {
   on: 'on',
 };
 
+const keyDownSet = new Set();
+
 const defaultLang = 'en';
 const saveLang = (lang) => window.localStorage.setItem('lang', lang);
 const getLang = () => (window.localStorage.getItem('lang') ? window.localStorage.getItem('lang') : defaultLang);
@@ -23,8 +25,8 @@ const createKeyboardElements = (lang) => {
   const kbElements = Object.entries(getCurrentLayout(lang)).map((key) => {
     const [id, value] = key;
     const elem = document.createElement('span');
-    elem.id = id.toLowerCase();
-    elem.innerHTML = value;
+    elem.id = id;
+    elem.innerHTML = value[0].toUpperCase();
     elem.classList.add(cssClasses.key);
     elem.style.gridArea = id;
     return elem;
@@ -47,13 +49,17 @@ const createPageElements = (lang) => {
   const kbElements = createKeyboardElements(lang);
   kbKeys.append(...kbElements);
   kbContainer.append(kbKeys);
-  mainContainer.append(textArea, kbContainer);
+  const legend = document.createElement('div');
+  legend.append(document.createTextNode('Caps Lock - change layout'));
+  const legendRu = document.createElement('div');
+  legendRu.append(document.createTextNode('Caps Lock - смена раскладки'));
+  mainContainer.append(textArea, kbContainer, legend, legendRu);
   return mainContainer;
 };
 
-const printSymbol = (keyCode) => {
+const printSymbol = (char) => {
   const textArea = document.querySelector(`.${cssClasses.textArea}`);
-  const char = getCurrentLayout(getLang())[keyCode];
+  // fixme - print at cursor position
   textArea.textContent += char;
   textArea.setSelectionRange(textArea.textContent.length + 1, textArea.textContent.length + 1);
 };
@@ -68,14 +74,6 @@ const moveCursorRight = (textArea) => {
   textArea.setSelectionRange(textArea.selectionEnd + 1, textArea.selectionEnd + 1);
 };
 
-const moveCursorUp = (textArea) => {
-
-};
-
-const moveCursorDown = (textArea) => {
-
-};
-
 const switchLayout = () => {
   let lang = !getLang() ? defaultLang : getLang();
   lang = lang === 'en' ? 'ru' : 'en';
@@ -86,16 +84,18 @@ const switchLayout = () => {
   kbKeys.append(...kbElements);
 };
 
-const processKeyPressed = (key, keyCode) => {
+const processKeyPressed = (key, code) => {
   const textArea = document.querySelector(`.${cssClasses.textArea}`);
   const text = textArea.textContent;
-  switch (keyCode) {
+  const currentLayout = getCurrentLayout(getLang());
+  const shiftDown = keyDownSet.has('Shift');
+  switch (code) {
     case 'Backspace':
       textArea.textContent = text.substring(0, text.length - 1);
       textArea.setSelectionRange(text.length, text.length);
       break;
     case 'Enter':
-      printSymbol('\r\n');
+      printSymbol('\n');
       break;
     case 'Tab':
       printSymbol('\t');
@@ -118,10 +118,7 @@ const processKeyPressed = (key, keyCode) => {
       moveCursorRight(textArea);
       break;
     case 'ArrowUp':
-      moveCursorUp(textArea);
-      break;
     case 'ArrowDown':
-      moveCursorDown(textArea);
       break;
     case 'ShiftLeft':
     case 'ShiftRight':
@@ -131,7 +128,7 @@ const processKeyPressed = (key, keyCode) => {
     case 'ControlRight':
       break;
     default:
-      printSymbol(keyCode);
+      printSymbol(currentLayout[code][shiftDown ? 1 : 0]);
       textArea.focus();
       break;
   }
@@ -139,14 +136,18 @@ const processKeyPressed = (key, keyCode) => {
 
 const onKeyDown = (event) => {
   event.preventDefault();
-  const keyElement = document.querySelector(`#${event.code.toLowerCase()}`);
-  if (keyElement) keyElement.classList.add(cssClasses.keyPressed);
+  const keyElement = document.querySelector(`#${event.code}`);
+  if (keyElement) {
+    keyDownSet.add(event.key);
+    keyElement.classList.add(cssClasses.keyPressed);
+  }
 };
 
 const onKeyUp = (event) => {
   event.preventDefault();
-  const keyElement = document.querySelector(`#${event.code.toLowerCase()}`);
+  const keyElement = document.querySelector(`#${event.code}`);
   if (keyElement) {
+    keyDownSet.delete(event.key);
     keyElement.classList.remove(cssClasses.keyPressed);
     processKeyPressed(event.key, event.code);
   }

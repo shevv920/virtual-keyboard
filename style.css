@@ -14,9 +14,9 @@
 }
 
 .textarea {
-  padding: 5px;
+  padding: 0.5ex;
   height: 128px;
-  width: 100%;
+  width: 80ex;
   resize: none;
 }
 
