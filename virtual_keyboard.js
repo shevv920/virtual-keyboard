@@ -62,14 +62,10 @@ const printSymbol = (textArea, char) => {
   textArea.focus();
 };
 
-const moveCursorLeft = (textArea) => {
-  if (textArea.selectionEnd) {
-    textArea.setSelectionRange(textArea.selectionEnd - 1, textArea.selectionEnd - 1);
-  }
-};
-
-const moveCursorRight = (textArea) => {
-  textArea.setSelectionRange(textArea.selectionEnd + 1, textArea.selectionEnd + 1);
+const moveCursorHorizontally = (n, textArea) => {
+  textArea.setSelectionRange(Math.max(0, textArea.selectionEnd + n),
+    Math.max(0, textArea.selectionEnd + n));
+  textArea.focus();
 };
 
 const switchLayout = () => {
@@ -110,10 +106,10 @@ const processKeyPressed = (key, code) => {
       }
       break;
     case 'ArrowLeft':
-      moveCursorLeft(textArea);
+      moveCursorHorizontally(-1, textArea);
       break;
     case 'ArrowRight':
-      moveCursorRight(textArea);
+      moveCursorHorizontally(1, textArea);
       break;
     case 'ArrowUp':
     case 'ArrowDown':
