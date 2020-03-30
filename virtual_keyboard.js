@@ -167,14 +167,15 @@ const onKeyUp = (event) => {
 
 const onMouseDown = (event) => {
   event.preventDefault();
-  if (event.target.classList.contains(cssClasses.key)) { // if target is key
+  if (event.target.classList.contains(cssClasses.key)) {
     addKeyDown(event.target.textContent, event.target.id);
   }
 };
 
 const onMouseUp = (event) => {
   event.preventDefault();
-  if (event.target.classList.contains(cssClasses.key)) { // if target is key
+  if (event.target.classList.contains(cssClasses.key)
+    && event.target.classList.contains(cssClasses.keyPressed)) {
     addKeyUp(event.target.textContent, event.target.id);
   }
 };
@@ -185,6 +186,7 @@ window.addEventListener('load', () => {
   document.querySelector('body').appendChild(pageElements);
   document.querySelector(`.${cssClasses.kbKeys}`).addEventListener('mousedown', onMouseDown);
   document.querySelector(`.${cssClasses.kbKeys}`).addEventListener('mouseup', onMouseUp);
+  document.querySelector(`.${cssClasses.kbKeys}`).addEventListener('mouseout', onMouseUp);
   document.addEventListener('keydown', onKeyDown);
   document.addEventListener('keyup', onKeyUp);
 });
