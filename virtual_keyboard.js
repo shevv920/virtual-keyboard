@@ -89,10 +89,10 @@ const processKeyPressed = (key, code) => {
       textArea.setSelectionRange(text.length, text.length);
       break;
     case 'Enter':
-      printSymbol('\n');
+      printSymbol(textArea, '\n');
       break;
     case 'Tab':
-      printSymbol('\t');
+      printSymbol(textArea, '\t');
       break;
     case 'CapsLock':
       document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.on);
