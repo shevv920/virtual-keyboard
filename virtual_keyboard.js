@@ -13,6 +13,8 @@ const cssClasses = {
   on: 'on',
 };
 
+const KEY_REPETITION_TIME = 250;
+
 const keyDownSet = new Set();
 
 const defaultLang = 'en';
@@ -168,7 +170,7 @@ const addKeyDown = (key, code) => {
         if (keyDownSet.has(k)) {
           processKeyPressed(k, c);
         }
-      }, 250, key, code);
+      }, KEY_REPETITION_TIME, key, code);
     }
     if (keyDownSet.has('Shift') && keyDownSet.has('Control')) switchLayout();
   }
