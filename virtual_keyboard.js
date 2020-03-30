@@ -64,9 +64,7 @@ const createPageElements = (lang) => {
   kbContainer.append(kbKeys);
   const legend = document.createElement('div');
   legend.append(document.createTextNode('Ctrl+Shift - change layout'));
-  const legendRu = document.createElement('div');
-  legendRu.append(document.createTextNode('Ctrl+Shift - смена раскладки'));
-  mainContainer.append(textArea, kbContainer, legend, legendRu);
+  mainContainer.append(textArea, kbContainer, legend);
   return mainContainer;
 };
 
