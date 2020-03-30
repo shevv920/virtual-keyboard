@@ -76,3 +76,11 @@
 #Space {
   justify-self: stretch;
 }
+
+#ArrowLeft {
+  justify-self: end;
+}
+
+#ArrowRight {
+  justify-self: start;
+}
