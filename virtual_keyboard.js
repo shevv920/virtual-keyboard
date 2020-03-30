@@ -62,6 +62,17 @@ const printSymbol = (textArea, char) => {
   textArea.focus();
 };
 
+const deleteSymbol = (textArea, offset) => {
+  if (textArea.selectionStart === textArea.selectionEnd) {
+    const start = Math.min(textArea.selectionStart, textArea.selectionStart + offset);
+    const end = Math.max(textArea.selectionEnd, textArea.selectionEnd + offset);
+    textArea.setRangeText('', start, end, 'end');
+  } else {
+    textArea.setRangeText('', textArea.selectionStart, textArea.selectionEnd, 'end');
+  }
+  textArea.focus();
+};
+
 const moveCursorHorizontally = (n, textArea) => {
   textArea.setSelectionRange(Math.max(0, textArea.selectionEnd + n),
     Math.max(0, textArea.selectionEnd + n));
@@ -85,13 +96,11 @@ const switchLayout = () => {
 
 const processKeyPressed = (key, code) => {
   const textArea = document.querySelector(`.${cssClasses.textArea}`);
-  const text = textArea.textContent;
   const currentLayout = getCurrentLayout(getLang());
   const shiftDown = keyDownSet.has('Shift');
   switch (code) {
     case 'Backspace':
-      textArea.textContent = text.substring(0, text.length - 1);
-      textArea.setSelectionRange(text.length, text.length);
+      deleteSymbol(textArea, -1);
       break;
     case 'Enter':
       printSymbol(textArea, '\n');
@@ -104,11 +113,7 @@ const processKeyPressed = (key, code) => {
       switchLayout();
       break;
     case 'Delete':
-      if (textArea.selectionEnd < text.length) {
-        const temp = textArea.selectionEnd;
-        textArea.textContent = text.substring(0, text.length - 1);
-        textArea.setSelectionRange(temp, temp);
-      }
+      deleteSymbol(textArea, 1);
       break;
     case 'ArrowLeft':
       moveCursorHorizontally(-1, textArea);
