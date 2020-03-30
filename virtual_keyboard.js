@@ -6,7 +6,7 @@ const cssClasses = {
   kbKeys: 'keyboard_keys',
   textArea: 'textarea',
   key: 'key',
-  specialKey: 'special_key',
+  keySpecial: 'key-special',
   commonKey: 'common_key',
   keyPressed: 'key_pressed',
   capsIndicator: 'caps_indicator',
@@ -28,6 +28,7 @@ const createKeyboardElements = (lang) => {
     elem.id = id;
     elem.innerHTML = value[0].toUpperCase();
     elem.classList.add(cssClasses.key);
+    if (value[1] === undefined) elem.classList.add(cssClasses.keySpecial);
     elem.style.gridArea = id;
     return elem;
   });

@@ -21,7 +21,7 @@
 }
 
 .on {
-  background-color: #00ff00;
+  background-color: #00ff00 !important;
 }
 
 .caps_indicator {
@@ -29,12 +29,14 @@
   margin: 0 40px 10px 0;
   width: 10px;
   height: 10px;
+  background-color: #ffffff;
   border: 1px solid #000000;
   border-radius: 50%;
 }
 
 .keyboard_container {
   padding: 5px 5px 15px 5px;
+  background-color: #f2f2f2;
   border-top: 1px solid #adacac;
   border-right: 1px solid #adacac;
   border-left: 5px solid #adacac;
@@ -64,6 +66,10 @@
   box-shadow: 0 5px rgb(154, 154, 154);
   border: 1px solid #000000;
   border-radius: 5px;
+}
+
+.key-special {
+  background-color: #dbd8d8;
 }
 
 .key_pressed {
