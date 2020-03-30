@@ -68,6 +68,11 @@ const moveCursorHorizontally = (n, textArea) => {
   textArea.focus();
 };
 
+const moveCursorVertically = (textArea) => {
+  // to be implemented
+  textArea.focus();
+};
+
 const switchLayout = () => {
   let lang = !getLang() ? defaultLang : getLang();
   lang = lang === 'en' ? 'ru' : 'en';
@@ -113,6 +118,7 @@ const processKeyPressed = (key, code) => {
       break;
     case 'ArrowUp':
     case 'ArrowDown':
+      moveCursorVertically(textArea);
       break;
     case 'ShiftLeft':
     case 'ShiftRight':
