@@ -80,8 +80,21 @@ const moveCursorHorizontally = (n, textArea) => {
   textArea.focus();
 };
 
-const moveCursorVertically = (textArea) => {
-  // to be implemented
+const moveCursorUp = (textArea) => {
+  const cursorPos = textArea.selectionEnd;
+  const textBefore = textArea.value.substring(0, cursorPos);
+  if (textBefore.lastIndexOf('\n') > 0) {
+    textArea.setSelectionRange(textBefore.lastIndexOf('\n'), textBefore.lastIndexOf('\n'));
+  }
+  textArea.focus();
+};
+
+const moveCursorDown = (textArea) => {
+  const cursorPos = textArea.selectionEnd;
+  const textAfter = textArea.value.substring(cursorPos);
+  if (textAfter.indexOf('\n') >= 0) {
+    textArea.setSelectionRange(cursorPos + textAfter.indexOf('\n') + 1, cursorPos + textAfter.indexOf('\n') + 1);
+  }
   textArea.focus();
 };
 
@@ -123,8 +136,10 @@ const processKeyPressed = (key, code) => {
       moveCursorHorizontally(1, textArea);
       break;
     case 'ArrowUp':
+      moveCursorUp(textArea);
+      break;
     case 'ArrowDown':
-      moveCursorVertically(textArea);
+      moveCursorDown(textArea);
       break;
     case 'ShiftLeft':
     case 'ShiftRight':
