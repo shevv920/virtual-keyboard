@@ -133,22 +133,44 @@ const processKeyPressed = (key, code) => {
   }
 };
 
-const onKeyDown = (event) => {
-  event.preventDefault();
-  const keyElement = document.querySelector(`#${event.code}`);
+const addKeyDown = (key, code) => {
+  const keyElement = document.querySelector(`#${code}`);
   if (keyElement) {
-    keyDownSet.add(event.key);
+    keyDownSet.add(key);
     keyElement.classList.add(cssClasses.keyPressed);
   }
 };
 
+const addKeyUp = (key, code) => {
+  const keyElement = document.querySelector(`#${code}`);
+  if (keyElement) {
+    keyDownSet.delete(key);
+    keyElement.classList.remove(cssClasses.keyPressed);
+    processKeyPressed(key, code);
+  }
+};
+
+const onKeyDown = (event) => {
+  event.preventDefault();
+  addKeyDown(event.key, event.code);
+};
+
 const onKeyUp = (event) => {
   event.preventDefault();
-  const keyElement = document.querySelector(`#${event.code}`);
-  if (keyElement) {
-    keyDownSet.delete(event.key);
-    keyElement.classList.remove(cssClasses.keyPressed);
-    processKeyPressed(event.key, event.code);
+  addKeyUp(event.key, event.code);
+};
+
+const onMouseDown = (event) => {
+  event.preventDefault();
+  if (event.target.classList.contains(cssClasses.key)) { // if target is key
+    addKeyDown(event.target.textContent, event.target.id);
+  }
+};
+
+const onMouseUp = (event) => {
+  event.preventDefault();
+  if (event.target.classList.contains(cssClasses.key)) { // if target is key
+    addKeyUp(event.target.textContent, event.target.id);
   }
 };
 
@@ -156,6 +178,8 @@ window.addEventListener('load', () => {
   const lang = getLang();
   const pageElements = createPageElements(lang);
   document.querySelector('body').appendChild(pageElements);
+  document.querySelector(`.${cssClasses.kbKeys}`).addEventListener('mousedown', onMouseDown);
+  document.querySelector(`.${cssClasses.kbKeys}`).addEventListener('mouseup', onMouseUp);
   document.addEventListener('keydown', onKeyDown);
   document.addEventListener('keyup', onKeyUp);
 });
