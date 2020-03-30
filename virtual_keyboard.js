@@ -65,7 +65,7 @@ const printSymbol = (textArea, char) => {
 
 const deleteSymbol = (textArea, offset) => {
   if (textArea.selectionStart === textArea.selectionEnd) {
-    const start = Math.min(textArea.selectionStart, textArea.selectionStart + offset);
+    const start = Math.min(textArea.selectionStart, Math.max(0, textArea.selectionStart + offset));
     const end = Math.max(textArea.selectionEnd, textArea.selectionEnd + offset);
     textArea.setRangeText('', start, end, 'end');
   } else {
@@ -102,6 +102,7 @@ const switchLayout = () => {
   let lang = !getLang() ? defaultLang : getLang();
   lang = lang === 'en' ? 'ru' : 'en';
   saveLang(lang);
+  keyDownSet.clear();
   const kbElements = createKeyboardElements(getLang());
   const kbKeys = document.querySelector(`.${cssClasses.kbKeys}`);
   kbKeys.innerHTML = '';
@@ -159,6 +160,13 @@ const addKeyDown = (key, code) => {
   if (keyElement) {
     keyDownSet.add(key);
     keyElement.classList.add(cssClasses.keyPressed);
+    if (!keyElement.classList.contains(cssClasses.keySpecial)) {
+      setTimeout((k, c) => {
+        if (keyDownSet.has(k)) {
+          processKeyPressed(k, c);
+        }
+      }, 250, key, code);
+    }
   }
 };
 
