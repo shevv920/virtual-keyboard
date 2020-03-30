@@ -51,9 +51,9 @@ const createPageElements = (lang) => {
   kbKeys.append(...kbElements);
   kbContainer.append(kbKeys);
   const legend = document.createElement('div');
-  legend.append(document.createTextNode('Caps Lock - change layout'));
+  legend.append(document.createTextNode('Ctrl+Shift - change layout'));
   const legendRu = document.createElement('div');
-  legendRu.append(document.createTextNode('Caps Lock - смена раскладки'));
+  legendRu.append(document.createTextNode('Ctrl+Shift - смена раскладки'));
   mainContainer.append(textArea, kbContainer, legend, legendRu);
   return mainContainer;
 };
@@ -102,11 +102,15 @@ const switchLayout = () => {
   let lang = !getLang() ? defaultLang : getLang();
   lang = lang === 'en' ? 'ru' : 'en';
   saveLang(lang);
-  keyDownSet.clear();
-  const kbElements = createKeyboardElements(getLang());
-  const kbKeys = document.querySelector(`.${cssClasses.kbKeys}`);
-  kbKeys.innerHTML = '';
-  kbKeys.append(...kbElements);
+  const curLayout = getCurrentLayout(getLang());
+  const kbKeysContainer = document.querySelector(`.${cssClasses.kbKeys}`);
+  const keys = [...kbKeysContainer.children];
+  keys.forEach((key) => {
+    const keyVal = curLayout[key.id];
+    const textNode = document.createTextNode(keyVal[0].toUpperCase());
+    key.firstChild.remove();
+    key.append(textNode);
+  });
 };
 
 const processKeyPressed = (key, code) => {
@@ -125,7 +129,6 @@ const processKeyPressed = (key, code) => {
       break;
     case 'CapsLock':
       document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.on);
-      switchLayout();
       break;
     case 'Delete':
       deleteSymbol(textArea, 1);
@@ -167,6 +170,7 @@ const addKeyDown = (key, code) => {
         }
       }, 250, key, code);
     }
+    if (keyDownSet.has('Shift') && keyDownSet.has('Control')) switchLayout();
   }
 };
 
