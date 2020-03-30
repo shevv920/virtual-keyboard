@@ -10,12 +10,14 @@ const cssClasses = {
   commonKey: 'common_key',
   keyPressed: 'key_pressed',
   capsIndicator: 'caps_indicator',
-  on: 'on',
+  lightOn: 'on',
 };
 
 const KEY_REPETITION_TIME = 250;
 
 const keyDownSet = new Set();
+
+const isCapsOn = () => document.querySelector(`.${cssClasses.capsIndicator}`).classList.contains(cssClasses.lightOn);
 
 const defaultLang = 'en';
 const saveLang = (lang) => window.localStorage.setItem('lang', lang);
@@ -26,7 +28,7 @@ const getCurrentLayout = () => Layouts[getLang()];
 const createKeyTextElement = (values) => {
   const [val, altVal] = values;
   const textContent = val.toUpperCase();
-  const textElement = document.createElement('idv');
+  const textElement = document.createElement('div');
   const alternateContent = (altVal !== undefined && val.toUpperCase() !== altVal) ? `<sup>${altVal}</sup>` : '';
   textElement.innerHTML = textContent + alternateContent;
   return textElement;
@@ -68,7 +70,7 @@ const createPageElements = (lang) => {
   return mainContainer;
 };
 
-const printSymbol = (textArea, char) => {
+const printCharacter = (textArea, char) => {
   textArea.setRangeText(char, textArea.selectionStart, textArea.selectionEnd, 'end');
   textArea.focus();
 };
@@ -131,13 +133,13 @@ const processKeyPressed = (key, code) => {
       deleteSymbol(textArea, -1);
       break;
     case 'Enter':
-      printSymbol(textArea, '\n');
+      printCharacter(textArea, '\n');
       break;
     case 'Tab':
-      printSymbol(textArea, '\t');
+      printCharacter(textArea, '\t');
       break;
     case 'CapsLock':
-      document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.on);
+      document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.lightOn);
       break;
     case 'Delete':
       deleteSymbol(textArea, 1);
@@ -161,9 +163,17 @@ const processKeyPressed = (key, code) => {
     case 'ControlLeft':
     case 'ControlRight':
       break;
-    default:
-      printSymbol(textArea, currentLayout[code][shiftDown ? 1 : 0]);
+    default: {
+      const char = currentLayout[code][shiftDown ? 1 : 0];
+      if ((isCapsOn() && shiftDown)) { // caps lock + shift = lower case
+        printCharacter(textArea, char.toLowerCase());
+      } else if (isCapsOn()) {
+        printCharacter(textArea, char.toUpperCase());
+      } else {
+        printCharacter(textArea, char);
+      }
       break;
+    }
   }
 };
 
