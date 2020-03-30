@@ -57,11 +57,9 @@ const createPageElements = (lang) => {
   return mainContainer;
 };
 
-const printSymbol = (char) => {
-  const textArea = document.querySelector(`.${cssClasses.textArea}`);
-  // fixme - print at cursor position
-  textArea.textContent += char;
-  textArea.setSelectionRange(textArea.textContent.length + 1, textArea.textContent.length + 1);
+const printSymbol = (textArea, char) => {
+  textArea.setRangeText(char, textArea.selectionStart, textArea.selectionEnd, 'end');
+  textArea.focus();
 };
 
 const moveCursorLeft = (textArea) => {
@@ -128,8 +126,7 @@ const processKeyPressed = (key, code) => {
     case 'ControlRight':
       break;
     default:
-      printSymbol(currentLayout[code][shiftDown ? 1 : 0]);
-      textArea.focus();
+      printSymbol(textArea, currentLayout[code][shiftDown ? 1 : 0]);
       break;
   }
 };
