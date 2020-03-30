@@ -8,6 +8,11 @@
   box-sizing: border-box;
 }
 
+sup {
+  color: #ff0000;
+  font-size: 14px;
+}
+
 .wrapper {
   max-width: 800px;
   padding: 40px;
@@ -58,9 +63,9 @@
 }
 
 .key {
-  min-width: 25px;
-  min-height: 20px;
   padding: 0 2px;
+  min-width: 25px;
+  min-height: 25px;
   text-align: center;
   cursor: pointer;
   box-shadow: 0 5px rgb(154, 154, 154);

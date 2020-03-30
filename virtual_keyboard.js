@@ -21,17 +21,25 @@ const defaultLang = 'en';
 const saveLang = (lang) => window.localStorage.setItem('lang', lang);
 const getLang = () => (window.localStorage.getItem('lang') ? window.localStorage.getItem('lang') : defaultLang);
 
-const getCurrentLayout = (lang) => (lang !== null ? Layouts[lang] : Layouts[defaultLang]);
+const getCurrentLayout = () => Layouts[getLang()];
 
-const createKeyboardElements = (lang) => {
-  const kbElements = Object.entries(getCurrentLayout(lang)).map((key) => {
-    const [id, value] = key;
-    const elem = document.createElement('span');
+const createKeyTextElement = (values) => {
+  const [val, altVal] = values;
+  const textContent = val.toUpperCase();
+  const textElement = document.createElement('idv');
+  const alternateContent = (altVal !== undefined && val.toUpperCase() !== altVal) ? `<sup>${altVal}</sup>` : '';
+  textElement.innerHTML = textContent + alternateContent;
+  return textElement;
+};
+
+const createKeyboardElements = () => {
+  const kbElements = Object.entries(getCurrentLayout()).map((key) => {
+    const [id, values] = key;
+    const elem = document.createElement('div');
     elem.id = id;
-    elem.innerHTML = value[0].toUpperCase();
     elem.classList.add(cssClasses.key);
-    if (value[1] === undefined) elem.classList.add(cssClasses.keySpecial);
     elem.style.gridArea = id;
+    elem.append(createKeyTextElement(values));
     return elem;
   });
   return kbElements;
@@ -104,20 +112,19 @@ const switchLayout = () => {
   let lang = !getLang() ? defaultLang : getLang();
   lang = lang === 'en' ? 'ru' : 'en';
   saveLang(lang);
-  const curLayout = getCurrentLayout(getLang());
+  const curLayout = getCurrentLayout();
   const kbKeysContainer = document.querySelector(`.${cssClasses.kbKeys}`);
   const keys = [...kbKeysContainer.children];
   keys.forEach((key) => {
-    const keyVal = curLayout[key.id];
-    const textNode = document.createTextNode(keyVal[0].toUpperCase());
+    const values = curLayout[key.id];
     key.firstChild.remove();
-    key.append(textNode);
+    key.append(createKeyTextElement(values));
   });
 };
 
 const processKeyPressed = (key, code) => {
   const textArea = document.querySelector(`.${cssClasses.textArea}`);
-  const currentLayout = getCurrentLayout(getLang());
+  const currentLayout = getCurrentLayout();
   const shiftDown = keyDownSet.has('Shift');
   switch (code) {
     case 'Backspace':
@@ -204,8 +211,7 @@ const onMouseDown = (event) => {
 
 const onMouseUp = (event) => {
   event.preventDefault();
-  if (event.target.classList.contains(cssClasses.key)
-    && event.target.classList.contains(cssClasses.keyPressed)) {
+  if (event.target.classList.contains(cssClasses.keyPressed)) {
     addKeyUp(event.target.textContent, event.target.id);
   }
 };
@@ -214,9 +220,11 @@ window.addEventListener('load', () => {
   const lang = getLang();
   const pageElements = createPageElements(lang);
   document.querySelector('body').appendChild(pageElements);
-  document.querySelector(`.${cssClasses.kbKeys}`).addEventListener('mousedown', onMouseDown);
-  document.querySelector(`.${cssClasses.kbKeys}`).addEventListener('mouseup', onMouseUp);
-  document.querySelector(`.${cssClasses.kbKeys}`).addEventListener('mouseout', onMouseUp);
+  document.querySelectorAll(`.${cssClasses.key}`).forEach((keyElement) => {
+    keyElement.addEventListener('mousedown', onMouseDown);
+    keyElement.addEventListener('mouseup', onMouseUp);
+    keyElement.addEventListener('mouseout', onMouseUp);
+  });
   document.addEventListener('keydown', onKeyDown);
   document.addEventListener('keyup', onKeyUp);
 });
