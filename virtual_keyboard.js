@@ -176,6 +176,7 @@ const processKeyPressed = (key, code) => {
     case 'AltRight':
     case 'ControlLeft':
     case 'ControlRight':
+    case 'Win':
       break;
     default: {
       const char = currentLayout[code][shiftDown ? 1 : 0];
