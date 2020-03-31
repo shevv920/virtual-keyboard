@@ -73,7 +73,7 @@ const printCharacter = (textArea, char) => {
   textArea.focus();
 };
 
-const deleteSymbol = (textArea, offset) => {
+const deleteCharacter = (textArea, offset) => {
   if (textArea.selectionStart === textArea.selectionEnd) {
     const start = Math.min(textArea.selectionStart, Math.max(0, textArea.selectionStart + offset));
     const end = Math.max(textArea.selectionEnd, textArea.selectionEnd + offset);
@@ -128,7 +128,7 @@ const processKeyPressed = (key, code) => {
   const shiftDown = keyDownSet.has('Shift');
   switch (code) {
     case 'Backspace':
-      deleteSymbol(textArea, -1);
+      deleteCharacter(textArea, -1);
       break;
     case 'Enter':
       printCharacter(textArea, '\n');
@@ -140,7 +140,7 @@ const processKeyPressed = (key, code) => {
       document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.lightOn);
       break;
     case 'Delete':
-      deleteSymbol(textArea, 1);
+      deleteCharacter(textArea, 1);
       break;
     case 'ArrowLeft':
       moveCursorHorizontally(-1, textArea);
