@@ -14,6 +14,7 @@ const cssClasses = {
 };
 
 const KEY_REPETITION_TIME = 250;
+const TEXT_AREA_MAX_COLS = 78;
 
 const keyDownSet = new Set();
 
@@ -52,6 +53,7 @@ const createPageElements = (lang) => {
   mainContainer.classList.add(cssClasses.wrapper);
   const textArea = document.createElement('textarea');
   textArea.classList.add(cssClasses.textArea);
+  textArea.setAttribute('cols', TEXT_AREA_MAX_COLS);
   const kbContainer = document.createElement('div');
   kbContainer.classList.add(cssClasses.kbContainer);
   const capsIndicator = document.createElement('div');
@@ -69,6 +71,12 @@ const createPageElements = (lang) => {
 };
 
 const printCharacter = (textArea, char) => {
+  const cursorPos = textArea.selectionEnd;
+  const prevLine = textArea.value.lastIndexOf('\n', cursorPos);
+  const maxCols = textArea.getAttribute('cols');
+  if ((cursorPos - prevLine) > maxCols && textArea.selectionEnd - textArea.selectionStart === 0) {
+    textArea.setRangeText('\n', textArea.selectionStart, textArea.selectionEnd, 'end');
+  }
   textArea.setRangeText(char, textArea.selectionStart, textArea.selectionEnd, 'end');
   textArea.focus();
 };
@@ -90,20 +98,28 @@ const moveCursorHorizontally = (n, textArea) => {
   textArea.focus();
 };
 
-const moveCursorUp = (textArea) => {
-  const cursorPos = textArea.selectionEnd;
-  const textBefore = textArea.value.substring(0, cursorPos);
-  if (textBefore.lastIndexOf('\n') > 0) {
-    textArea.setSelectionRange(textBefore.lastIndexOf('\n'), textBefore.lastIndexOf('\n'));
+const moveCursorDown = () => {
+  const textArea = document.querySelector(`.${cssClasses.textArea}`);
+  let cursorPos = textArea.selectionEnd;
+  const prevLine = textArea.value.lastIndexOf('\n', cursorPos);
+  const nextLine = textArea.value.indexOf('\n', prevLine + 1);
+  if (nextLine !== -1) {
+    cursorPos -= prevLine;
+    textArea.selectionStart = nextLine + cursorPos;
+    textArea.selectionEnd = nextLine + cursorPos;
   }
   textArea.focus();
 };
 
-const moveCursorDown = (textArea) => {
-  const cursorPos = textArea.selectionEnd;
-  const textAfter = textArea.value.substring(cursorPos);
-  if (textAfter.indexOf('\n') >= 0) {
-    textArea.setSelectionRange(cursorPos + textAfter.indexOf('\n') + 1, cursorPos + textAfter.indexOf('\n') + 1);
+const moveCursorUp = () => {
+  const textArea = document.querySelector(`.${cssClasses.textArea}`);
+  let cursorPos = textArea.selectionEnd;
+  const prevLine = textArea.value.lastIndexOf('\n', cursorPos);
+  const secLine = textArea.value.lastIndexOf('\n', prevLine - 1);
+  if (prevLine !== -1) {
+    cursorPos -= prevLine;
+    textArea.selectionStart = secLine + cursorPos;
+    textArea.selectionEnd = secLine + cursorPos;
   }
   textArea.focus();
 };
@@ -134,7 +150,7 @@ const processKeyPressed = (key, code) => {
       printCharacter(textArea, '\n');
       break;
     case 'Tab':
-      printCharacter(textArea, '\t');
+      printCharacter(textArea, '    ');
       break;
     case 'CapsLock':
       document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.lightOn);
@@ -149,10 +165,10 @@ const processKeyPressed = (key, code) => {
       moveCursorHorizontally(1, textArea);
       break;
     case 'ArrowUp':
-      moveCursorUp(textArea);
+      moveCursorUp();
       break;
     case 'ArrowDown':
-      moveCursorDown(textArea);
+      moveCursorDown();
       break;
     case 'ShiftLeft':
     case 'ShiftRight':
