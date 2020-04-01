@@ -229,15 +229,15 @@ const onKeyUp = (event) => {
 
 const onMouseDown = (event) => {
   event.preventDefault();
-  if (event.target.classList.contains(cssClasses.key)) {
-    addKeyDown(event.target.textContent, event.target.id);
+  if (event.currentTarget.classList.contains(cssClasses.key)) {
+    addKeyDown(event.currentTarget.textContent, event.currentTarget.id);
   }
 };
 
 const onMouseUp = (event) => {
   event.preventDefault();
-  if (event.target.classList.contains(cssClasses.keyPressed)) {
-    addKeyUp(event.target.textContent, event.target.id);
+  if (event.currentTarget.classList.contains(cssClasses.keyPressed)) {
+    addKeyUp(event.currentTarget.textContent, event.currentTarget.id);
   }
 };
 
