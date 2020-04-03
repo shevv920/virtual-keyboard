@@ -150,7 +150,9 @@ const processKeyPressed = (key, code) => {
       printCharacter(textArea, '\n');
       break;
     case 'Tab':
-      printCharacter(textArea, '    ');
+      for (let i = 0; i < 4; i += 1) {
+        printCharacter(textArea, ' ');
+      }
       break;
     case 'CapsLock':
       document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.lightOn);
@@ -177,6 +179,7 @@ const processKeyPressed = (key, code) => {
     case 'ControlLeft':
     case 'ControlRight':
     case 'Win':
+    case 'Meta':
       break;
     default: {
       const char = currentLayout[code][shiftDown ? 1 : 0];
