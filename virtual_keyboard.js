@@ -13,7 +13,6 @@ const cssClasses = {
   lightOn: 'on',
 };
 
-const KEY_REPETITION_TIME = 250;
 const TEXT_AREA_MAX_COLS = 78;
 
 const keyDownSet = new Set();
@@ -202,13 +201,7 @@ const addKeyDown = (key, code) => {
   if (keyElement) {
     keyDownSet.add(key);
     keyElement.classList.add(cssClasses.keyPressed);
-    if (!keyElement.classList.contains(cssClasses.keySpecial)) {
-      setTimeout((k, c) => {
-        if (keyDownSet.has(k)) {
-          processKeyPressed(k, c);
-        }
-      }, KEY_REPETITION_TIME, key, code);
-    }
+    processKeyPressed(key, code);
     if (keyDownSet.has('Shift') && keyDownSet.has('Control')) switchLayout();
   }
 };
@@ -218,7 +211,6 @@ const addKeyUp = (key, code) => {
   if (keyElement) {
     keyDownSet.delete(key);
     keyElement.classList.remove(cssClasses.keyPressed);
-    processKeyPressed(key, code);
   }
 };
 
