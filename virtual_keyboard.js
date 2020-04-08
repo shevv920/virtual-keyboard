@@ -142,7 +142,7 @@ const switchLayout = () => {
 const isShiftDown = () => keyDownSet.has('ShiftLeft') || keyDownSet.has('ShiftRight');
 const isControlDown = () => keyDownSet.has('ControlLeft') || keyDownSet.has('ControlRight');
 
-const processKeyPressed = (key, code) => {
+const processKeyPressed = (code) => {
   const textArea = document.querySelector(`.${cssClasses.textArea}`);
   const currentLayout = getCurrentLayout();
   switch (code) {
@@ -200,44 +200,43 @@ const processKeyPressed = (key, code) => {
   }
 };
 
-const addKeyDown = (key, code) => {
+const addKeyDown = (event, code) => {
   const keyElement = document.querySelector(`#${code}`);
   if (keyElement) {
+    event.preventDefault();
     keyDownSet.add(code);
     keyElement.classList.add(cssClasses.keyPressed);
-    processKeyPressed(key, code);
+    processKeyPressed(code);
     if (isShiftDown() && isControlDown()) switchLayout();
   }
 };
 
-const addKeyUp = (code) => {
+const addKeyUp = (event, code) => {
   const keyElement = document.querySelector(`#${code}`);
   if (keyElement) {
+    event.preventDefault();
     keyDownSet.delete(code);
     keyElement.classList.remove(cssClasses.keyPressed);
   }
 };
 
 const onKeyDown = (event) => {
-  event.preventDefault();
-  addKeyDown(event.key, event.code);
+  addKeyDown(event, event.code);
 };
 
 const onKeyUp = (event) => {
-  event.preventDefault();
-  addKeyUp(event.code);
+  addKeyUp(event, event.code);
 };
 
 const onMouseDown = (event) => {
-  event.preventDefault();
   if (event.currentTarget.classList.contains(cssClasses.key)) {
-    addKeyDown(event.currentTarget.textContent, event.currentTarget.id);
+    addKeyDown(event, event.currentTarget.id);
   }
 };
 
 const onMouseUp = (event) => {
   if (event.currentTarget.classList.contains(cssClasses.keyPressed)) {
-    addKeyUp(event.currentTarget.id);
+    addKeyUp(event, event.currentTarget.id);
   }
 };
 
