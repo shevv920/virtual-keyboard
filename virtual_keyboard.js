@@ -234,7 +234,6 @@ const onMouseDown = (event) => {
 };
 
 const onMouseUp = (event) => {
-  event.preventDefault();
   if (event.currentTarget.classList.contains(cssClasses.keyPressed)) {
     addKeyUp(event.currentTarget.id);
   }
