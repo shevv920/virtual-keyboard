@@ -28,8 +28,10 @@ const getCurrentLayout = () => Layouts[getLang()];
 const createKeyTextElement = (values) => {
   const [val, altVal] = values;
   const textContent = val.toUpperCase();
-  const textElement = document.createElement('div');
-  const alternateContent = (altVal !== undefined && val.toUpperCase() !== altVal) ? `<sup>${altVal}</sup>` : '';
+  const textElement = document.createElement('span');
+  const isAltValExists = altVal !== undefined;
+  const isAltValDifferentChar = val.toUpperCase() !== altVal;
+  const alternateContent = (isAltValExists && isAltValDifferentChar) ? `<sup>${altVal}</sup>` : '';
   textElement.innerHTML = textContent + alternateContent;
   return textElement;
 };
