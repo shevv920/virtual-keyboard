@@ -1,4 +1,4 @@
-import Layouts from './layouts.js';
+import layouts from './layouts.js';
 
 const cssClasses = {
   wrapper: 'wrapper',
@@ -23,7 +23,7 @@ const defaultLang = 'en';
 const saveLang = (lang) => window.localStorage.setItem('lang', lang);
 const getLang = () => (window.localStorage.getItem('lang') ? window.localStorage.getItem('lang') : defaultLang);
 
-const getCurrentLayout = () => Layouts[getLang()];
+const getCurrentLayout = () => layouts[getLang()];
 
 const createKeyTextElement = (values) => {
   const [val, altVal] = values;
