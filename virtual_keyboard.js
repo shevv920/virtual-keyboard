@@ -190,13 +190,13 @@ const processKeyPressed = (code) => {
       break;
     default: {
       const char = currentLayout[code][isShiftDown() ? 1 : 0];
+      let charToPrint = char;
       if ((isCapsOn() && isShiftDown())) { // caps lock + shift = lower case
-        printCharacter(textArea, char.toLowerCase());
+        charToPrint = char.toLowerCase();
       } else if (isCapsOn()) {
-        printCharacter(textArea, char.toUpperCase());
-      } else {
-        printCharacter(textArea, char);
+        charToPrint = char.toUpperCase();
       }
+      printCharacter(textArea, charToPrint);
       break;
     }
   }
