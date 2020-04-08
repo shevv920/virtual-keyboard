@@ -14,6 +14,8 @@ const cssClasses = {
 };
 
 const TEXT_AREA_MAX_COLS = 78;
+const OFFSET_FORWARD = 1;
+const OFFSET_BACKWARD = -1;
 
 const keyDownSet = new Set();
 
@@ -147,7 +149,7 @@ const processKeyPressed = (code) => {
   const currentLayout = getCurrentLayout();
   switch (code) {
     case 'Backspace':
-      deleteCharacter(textArea, -1);
+      deleteCharacter(textArea, OFFSET_BACKWARD);
       break;
     case 'Enter':
       printCharacter(textArea, '\n');
@@ -161,13 +163,13 @@ const processKeyPressed = (code) => {
       document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.lightOn);
       break;
     case 'Delete':
-      deleteCharacter(textArea, 1);
+      deleteCharacter(textArea, OFFSET_FORWARD);
       break;
     case 'ArrowLeft':
-      moveCursorHorizontally(-1, textArea);
+      moveCursorHorizontally(OFFSET_BACKWARD, textArea);
       break;
     case 'ArrowRight':
-      moveCursorHorizontally(1, textArea);
+      moveCursorHorizontally(OFFSET_FORWARD, textArea);
       break;
     case 'ArrowUp':
       moveCursorUp();
