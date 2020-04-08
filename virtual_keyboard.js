@@ -137,10 +137,12 @@ const switchLayout = () => {
   });
 };
 
+const isShiftDown = () => keyDownSet.has('ShiftLeft') || keyDownSet.has('ShiftRight');
+const isControlDown = () => keyDownSet.has('ControlLeft') || keyDownSet.has('ControlRight');
+
 const processKeyPressed = (key, code) => {
   const textArea = document.querySelector(`.${cssClasses.textArea}`);
   const currentLayout = getCurrentLayout();
-  const shiftDown = keyDownSet.has('Shift');
   switch (code) {
     case 'Backspace':
       deleteCharacter(textArea, -1);
@@ -183,8 +185,8 @@ const processKeyPressed = (key, code) => {
     case 'MetaRight':
       break;
     default: {
-      const char = currentLayout[code][shiftDown ? 1 : 0];
-      if ((isCapsOn() && shiftDown)) { // caps lock + shift = lower case
+      const char = currentLayout[code][isShiftDown() ? 1 : 0];
+      if ((isCapsOn() && isShiftDown())) { // caps lock + shift = lower case
         printCharacter(textArea, char.toLowerCase());
       } else if (isCapsOn()) {
         printCharacter(textArea, char.toUpperCase());
@@ -199,17 +201,17 @@ const processKeyPressed = (key, code) => {
 const addKeyDown = (key, code) => {
   const keyElement = document.querySelector(`#${code}`);
   if (keyElement) {
-    keyDownSet.add(key);
+    keyDownSet.add(code);
     keyElement.classList.add(cssClasses.keyPressed);
     processKeyPressed(key, code);
-    if (keyDownSet.has('Shift') && keyDownSet.has('Control')) switchLayout();
+    if (isShiftDown() && isControlDown()) switchLayout();
   }
 };
 
-const addKeyUp = (key, code) => {
+const addKeyUp = (code) => {
   const keyElement = document.querySelector(`#${code}`);
   if (keyElement) {
-    keyDownSet.delete(key);
+    keyDownSet.delete(code);
     keyElement.classList.remove(cssClasses.keyPressed);
   }
 };
@@ -221,7 +223,7 @@ const onKeyDown = (event) => {
 
 const onKeyUp = (event) => {
   event.preventDefault();
-  addKeyUp(event.key, event.code);
+  addKeyUp(event.code);
 };
 
 const onMouseDown = (event) => {
@@ -234,7 +236,7 @@ const onMouseDown = (event) => {
 const onMouseUp = (event) => {
   event.preventDefault();
   if (event.currentTarget.classList.contains(cssClasses.keyPressed)) {
-    addKeyUp(event.currentTarget.textContent, event.currentTarget.id);
+    addKeyUp(event.currentTarget.id);
   }
 };
 
