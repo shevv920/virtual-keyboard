@@ -124,7 +124,7 @@ const moveCursorUp = () => {
 };
 
 const switchLayout = () => {
-  let lang = !getLang() ? defaultLang : getLang();
+  let lang = getLang();
   lang = lang === 'en' ? 'ru' : 'en';
   saveLang(lang);
   const curLayout = getCurrentLayout();
