@@ -64,9 +64,12 @@ sup {
 
 .key {
   padding: 0 2px;
-  min-width: 25px;
+  min-width: 30px;
   min-height: 25px;
-  text-align: center;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   box-shadow: 0 5px rgb(154, 154, 154);
   border: 1px solid #000000;
@@ -84,11 +87,16 @@ sup {
   transform: translateY(4px);
 }
 
-#Space {
+#Space,
+#ShiftLeft,
+#ControlLeft,
+#ControlRight,
+#Tab {
   justify-self: stretch;
 }
 
-#ArrowLeft {
+#ArrowLeft,
+#Backquote {
   justify-self: end;
 }
 
