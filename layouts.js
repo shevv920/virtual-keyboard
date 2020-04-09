@@ -1,4 +1,4 @@
-const Layouts = {
+const layout = {
   ru: {
     Backquote: ['ё', 'Ё'],
     Digit1: ['1', '!'],
@@ -132,4 +132,4 @@ const Layouts = {
     ArrowRight: ['►'],
   },
 };
-export default Layouts;
+export default layout;

@@ -1,4 +1,4 @@
-import Layouts from './layouts.js';
+import layouts from './layouts.js';
 
 const cssClasses = {
   wrapper: 'wrapper',
@@ -14,6 +14,8 @@ const cssClasses = {
 };
 
 const TEXT_AREA_MAX_COLS = 78;
+const OFFSET_FORWARD = 1;
+const OFFSET_BACKWARD = -1;
 
 const keyDownSet = new Set();
 
@@ -23,13 +25,15 @@ const defaultLang = 'en';
 const saveLang = (lang) => window.localStorage.setItem('lang', lang);
 const getLang = () => (window.localStorage.getItem('lang') ? window.localStorage.getItem('lang') : defaultLang);
 
-const getCurrentLayout = () => Layouts[getLang()];
+const getCurrentLayout = () => layouts[getLang()];
 
 const createKeyTextElement = (values) => {
   const [val, altVal] = values;
   const textContent = val.toUpperCase();
-  const textElement = document.createElement('div');
-  const alternateContent = (altVal !== undefined && val.toUpperCase() !== altVal) ? `<sup>${altVal}</sup>` : '';
+  const textElement = document.createElement('span');
+  const isAltValExists = altVal !== undefined;
+  const isAltValDifferentChar = val.toUpperCase() !== altVal;
+  const alternateContent = (isAltValExists && isAltValDifferentChar) ? `<sup>${altVal}</sup>` : '';
   textElement.innerHTML = textContent + alternateContent;
   return textElement;
 };
@@ -140,12 +144,12 @@ const switchLayout = () => {
 const isShiftDown = () => keyDownSet.has('ShiftLeft') || keyDownSet.has('ShiftRight');
 const isControlDown = () => keyDownSet.has('ControlLeft') || keyDownSet.has('ControlRight');
 
-const processKeyPressed = (key, code) => {
+const processKeyPressed = (code) => {
   const textArea = document.querySelector(`.${cssClasses.textArea}`);
   const currentLayout = getCurrentLayout();
   switch (code) {
     case 'Backspace':
-      deleteCharacter(textArea, -1);
+      deleteCharacter(textArea, OFFSET_BACKWARD);
       break;
     case 'Enter':
       printCharacter(textArea, '\n');
@@ -159,13 +163,13 @@ const processKeyPressed = (key, code) => {
       document.querySelector(`.${cssClasses.capsIndicator}`).classList.toggle(cssClasses.lightOn);
       break;
     case 'Delete':
-      deleteCharacter(textArea, 1);
+      deleteCharacter(textArea, OFFSET_FORWARD);
       break;
     case 'ArrowLeft':
-      moveCursorHorizontally(-1, textArea);
+      moveCursorHorizontally(OFFSET_BACKWARD, textArea);
       break;
     case 'ArrowRight':
-      moveCursorHorizontally(1, textArea);
+      moveCursorHorizontally(OFFSET_FORWARD, textArea);
       break;
     case 'ArrowUp':
       moveCursorUp();
@@ -186,57 +190,55 @@ const processKeyPressed = (key, code) => {
       break;
     default: {
       const char = currentLayout[code][isShiftDown() ? 1 : 0];
+      let charToPrint = char;
       if ((isCapsOn() && isShiftDown())) { // caps lock + shift = lower case
-        printCharacter(textArea, char.toLowerCase());
+        charToPrint = char.toLowerCase();
       } else if (isCapsOn()) {
-        printCharacter(textArea, char.toUpperCase());
-      } else {
-        printCharacter(textArea, char);
+        charToPrint = char.toUpperCase();
       }
+      printCharacter(textArea, charToPrint);
       break;
     }
   }
 };
 
-const addKeyDown = (key, code) => {
+const addKeyDown = (event, code) => {
   const keyElement = document.querySelector(`#${code}`);
   if (keyElement) {
+    event.preventDefault();
     keyDownSet.add(code);
     keyElement.classList.add(cssClasses.keyPressed);
-    processKeyPressed(key, code);
+    processKeyPressed(code);
     if (isShiftDown() && isControlDown()) switchLayout();
   }
 };
 
-const addKeyUp = (code) => {
+const addKeyUp = (event, code) => {
   const keyElement = document.querySelector(`#${code}`);
   if (keyElement) {
+    event.preventDefault();
     keyDownSet.delete(code);
     keyElement.classList.remove(cssClasses.keyPressed);
   }
 };
 
 const onKeyDown = (event) => {
-  event.preventDefault();
-  addKeyDown(event.key, event.code);
+  addKeyDown(event, event.code);
 };
 
 const onKeyUp = (event) => {
-  event.preventDefault();
-  addKeyUp(event.code);
+  addKeyUp(event, event.code);
 };
 
 const onMouseDown = (event) => {
-  event.preventDefault();
   if (event.currentTarget.classList.contains(cssClasses.key)) {
-    addKeyDown(event.currentTarget.textContent, event.currentTarget.id);
+    addKeyDown(event, event.currentTarget.id);
   }
 };
 
 const onMouseUp = (event) => {
-  event.preventDefault();
   if (event.currentTarget.classList.contains(cssClasses.keyPressed)) {
-    addKeyUp(event.currentTarget.id);
+    addKeyUp(event, event.currentTarget.id);
   }
 };
 
